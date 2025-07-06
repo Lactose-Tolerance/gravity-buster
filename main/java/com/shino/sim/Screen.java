@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -77,6 +78,7 @@ public final class Screen{
     private final JLabel timeLabel, titleLabel;
     private final JButton playButton, resetButton;
     private final JCheckBox showLabels;
+    private final JCheckBox showTrails;
     private final JSlider timeSlider;
 
     private final nBodySystem ob;
@@ -102,6 +104,22 @@ public final class Screen{
                 if(p.rr + p.gg + p.bb < 63){
                     g.setColor(Color.WHITE);
                     g.drawOval((int)(Math.round(p.r[0]) - p.d/2.0), (int)(Math.round(p.r[1])- p.d/2.0), Math.max(p.d, 1), Math.max(p.d, 1));
+                }
+                
+                if(showTrails.isSelected()){
+                    ArrayList<int[]> past = p.past;
+                    double opacity = 0;
+                    double step = 0.75 / past.size();
+                    for(int i=1; i<past.size(); i++){
+                        try{
+                            g.setColor(new Color((int) Math.round(p.rr*opacity), (int) Math.round(p.gg*opacity), (int) Math.round(p.bb*opacity)));
+                            opacity += step;
+                            g.drawLine(past.get(i)[0], past.get(i)[1], past.get(i-1)[0], past.get(i-1)[1]);
+                        }
+                        catch(Exception e){
+                            // ignore
+                        }
+                    }
                 }
             }
         }
@@ -195,7 +213,20 @@ public final class Screen{
 
         classLoader = Thread.currentThread().getContextClassLoader();
 
-        showLabels = new JCheckBox("Show Labels    ");
+        showTrails = new JCheckBox("Trails    ");
+        controlPanel.add(showTrails);
+        showTrails.setForeground(Color.WHITE);
+        showTrails.setBackground(Color.BLACK);
+        showTrails.setBorder(null);
+        showTrails.setFocusable(false);
+        showTrails.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                display();
+            }
+        });
+
+        showLabels = new JCheckBox("Labels    ");
         controlPanel.add(showLabels);
         showLabels.setForeground(Color.WHITE);
         showLabels.setBackground(Color.BLACK);

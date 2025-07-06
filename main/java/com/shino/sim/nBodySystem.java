@@ -9,6 +9,8 @@ class Particle{
     double m, r[], v[];
     int d;
     int rr, gg, bb;
+    int iter = 0;
+    ArrayList<int[]> past;
     
     Particle(String name, double m, double rx, double ry, double vx, double vy, int r, int g, int b){
         this.name = name;
@@ -16,6 +18,7 @@ class Particle{
         this.r = new double[2];
         this.r[0] = rx;
         this.r[1] = ry;
+        this.past = new ArrayList<>();
         v = new double[2];
         v[0] = vx;
         v[1] = vy;
@@ -23,6 +26,7 @@ class Particle{
         rr = r;
         gg = g;
         bb = b;
+        past.add(new int[]{(int) Math.round(rx), (int) Math.round(ry)});
     }
     
     double[] forceDueTo(Particle B){
@@ -39,6 +43,11 @@ class Particle{
         r[1] += v[1] * timeScale;
         v[0] += F[0] / m * timeScale;
         v[1] += F[1] / m * timeScale;
+        if(iter == 0){
+            past.add(new int[]{(int) Math.round(r[0]), (int) Math.round(r[1])});
+            if(past.size() > 1e3) past.remove(0);
+        }
+        iter = (iter + 1) % 10000;
     }
 
     Particle collide(Particle B){
@@ -100,6 +109,9 @@ class nBodySystem{
             P.get(i).r[1] -= frameCentreY - 375;
             P.get(i).v[0] -= frameVelocityX;
             P.get(i).v[1] -= frameVelocityY;
+
+            P.get(i).past.get(0)[0] -= frameCentreX - 500;
+            P.get(i).past.get(0)[1] -= frameCentreY - 375;
         }
     }
 
