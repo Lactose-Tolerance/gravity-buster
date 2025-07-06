@@ -98,13 +98,6 @@ public final class Screen{
         protected void paintComponent(Graphics g){
             super.paintComponent(g);
             for(Particle p : P){
-                g.setColor(new Color(p.rr, p.gg, p.bb));
-                g.fillOval((int)(Math.round(p.r[0]) - p.d/2.0), (int)(Math.round(p.r[1])- p.d/2.0), Math.max(p.d, 1), Math.max(p.d, 1));
-                if(p.rr + p.gg + p.bb < 63){
-                    g.setColor(Color.WHITE);
-                    g.drawOval((int)(Math.round(p.r[0]) - p.d/2.0), (int)(Math.round(p.r[1])- p.d/2.0), Math.max(p.d, 1), Math.max(p.d, 1));
-                }
-                
                 if(showTrails.isSelected()){
                     ArrayList<int[]> past = p.past;
                     double opacity = 0;
@@ -119,6 +112,13 @@ public final class Screen{
                             // ignore
                         }
                     }
+                }
+                
+                g.setColor(new Color(p.rr, p.gg, p.bb));
+                g.fillOval((int)(Math.round(p.r[0]) - p.d/2.0), (int)(Math.round(p.r[1])- p.d/2.0), Math.max(p.d, 1), Math.max(p.d, 1));
+                if(p.rr + p.gg + p.bb < 63){
+                    g.setColor(Color.WHITE);
+                    g.drawOval((int)(Math.round(p.r[0]) - p.d/2.0), (int)(Math.round(p.r[1])- p.d/2.0), Math.max(p.d, 1), Math.max(p.d, 1));
                 }
             }
         }
